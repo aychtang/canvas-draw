@@ -30,23 +30,42 @@ function makePos (c, x, y)
 
 // -----------------------------------------------------------------------------
 
+var onMouseMove;
+var onMouseDown;
+
+function mouseMove (e)
+{
+  if (active)
+    makeLine(this, e.x, e.y);
+}
+
+function mouseDown (e)
+{
+  isActive();
+  makePos(this, e.x, e.y);
+}
+
+// -----------------------------------------------------------------------------
+
 var isActive  = setActive(true);
 var notActive = setActive(false);
 
-function bindCanvas (canvas)
+exports.bindCanvas = function (canvas)
 {
+  // Keep refs for cleanup.
+  onMouseMove = mouseMove.bind(canvas);
+  onMouseDown = mouseDown.bind(canvas);
+
   canvas.addEventListener("mouseup"  , notActive);
   canvas.addEventListener("mouseout" , notActive);
-
-  canvas.addEventListener("mousemove", (e) => {
-    if (active)
-      makeLine(canvas, e.x, e.y);
-  });
-
-  canvas.addEventListener("mousedown", (e) => {
-    isActive();
-    makePos(canvas, e.x, e.y);
-  });
+  canvas.addEventListener("mousemove", onMouseMove);
+  canvas.addEventListener("mousedown", onMouseDown);
 }
 
-exports.bindCanvas = bindCanvas;
+exports.cleanup = function (canvas)
+{
+  canvas.removeEventListener("mouseup"  , notActive);
+  canvas.removeEventListener("mouseout" , notActive);
+  canvas.removeEventListener("mousemove", onMouseMove);
+  canvas.removeEventListener("mousedown", onMouseDown);
+}
