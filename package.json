@@ -1,0 +1,8 @@
+{
+  "name": "canvasdraw",
+  "version": "1.0.0",
+  "description": "Add position and line events for drawing onto canvas.",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
+}
